@@ -1,0 +1,75 @@
+
+spring:
+  application:
+    name: member-service
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/fashion_manager
+    username: swcamp
+    password: swcamp
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: indy03222100@gmail.com
+    password: immu ooev qfdo pgqv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 200MB
+
+  web:
+    resources:
+      static-locations: file:///C:/uploadFiles/
+      cache:
+        period: 3600   # Spring Boot 2.6+ 권장 표기 (기존 cache-period 대체)
+
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        format_sql: true
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mappers/**/*.xml
+  type-aliases-package: fashionmanager.song.develop
+
+
+token:
+  expiration_time: 86400000
+  secret: CxCdBy6P0vET6d/oKN9YSXzUBwfYGR+petj55jmBGrk3XaTqpaCMdgYbv7Q7ccrwjc2441jyOY0OKCFqbZPOHQ==
+logging:
+  level:
+    fashionmanager.song.develop: debug
+
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance-id}:${random.value}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+# 사용자 정의 프로퍼티 (필요시 @Value("${filepath}") 로 주입)
+filepath: C:/uploadFiles/
+
+
+

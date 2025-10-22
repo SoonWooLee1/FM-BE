@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fashionmanager.mapper.CommentMapper">
+
+    <select id="findCommentsByPost" parameterType="map" resultType="fashionmanager.dto.CommentDTO">
+        SELECT
+        A.NUM AS num
+        , A.CONTENT AS content
+        , A.GOOD AS good
+        , A.CHEER AS cheer
+        , A.MEMBER_NUM AS memberNum
+        , B.NAME AS memberName
+        FROM COMMENT A
+        LEFT JOIN MEMBER B ON A.MEMBER_NUM = B.NUM
+        WHERE
+        <choose>
+            <when test="postType == 'fashion'">
+                A.FASHION_POST_NUM = #{postNum}
+            </when>
+            <when test="postType == 'review'">
+                A.REVIEW_POST_NUM = #{postNum}
+            </when>
+            <when test="postType == 'mentoring'">
+                A.MENTORING_POST_NUM = #{postNum}
+            </when>
+        </choose>
+        ORDER BY
+        A.NUM ASC
+    </select>
+
+    <select id="findCommentByNum" parameterType="_int" resultType="fashionmanager.dto.CommentDTO">
+        SELECT
+            A.NUM AS num
+             , A.CONTENT AS content
+             , A.GOOD AS good
+             , A.CHEER AS cheer
+             , A.MEMBER_NUM AS memberNum
+             , B.NAME AS memberName
+        FROM COMMENT A
+        LEFT JOIN MEMBER B ON A.MEMBER_NUM = B.NUM
+        WHERE A.NUM = #{commentNum}
+    </select>
+
+</mapper>

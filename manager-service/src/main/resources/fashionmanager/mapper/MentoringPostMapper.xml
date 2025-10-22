@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fashionmanager.mapper.MentoringPostMapper">
+    <sql id="criteria">
+        <trim prefix="WHERE" prefixOverrides="OR">
+            <if test='type != null and type.contains("T")'>
+                OR mp.title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test='type != null and type.contains("W")'>
+                OR m.name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </trim>
+    </sql>
+    <resultMap id="selectAllMentoringPostMap" type="fashionmanager.dto.SelectAllMentoringPostDTO">
+        <id property="num" column="num"/>
+        <result property="title" column="title"/>
+        <result property="authorNum" column="author_num"/>
+        <result property="memberName" column="member_name"/>
+        <result property="finish" column="finish"/>
+    </resultMap>
+    <select id="findAll" resultMap="selectAllMentoringPostMap">
+        SELECT
+                mp.num
+              , mp.title
+              , mp.author_num
+              , mp.finish
+              , m.name AS member_name
+          FROM mentoring_post mp
+          LEFT JOIN
+               member m ON mp.author_num = m.num
+         ORDER BY mp.num desc;
+    </select>
+    <select id="getListWithPaging" resultMap="selectAllMentoringPostMap">
+        SELECT
+            mp.num, mp.title, mp.author_num, mp.finish, m.name AS member_name
+          FROM
+               mentoring_post mp
+          LEFT JOIN
+               member m ON mp.author_num = m.num
+        <include refid="criteria"></include>
+         ORDER BY
+               mp.num DESC
+         LIMIT #{amount} OFFSET ${(pageNum - 1) * amount}
+    </select>
+    <select id="getTotalCount" resultType="_int">
+        SELECT
+               count(*)
+          FROM mentoring_post mp
+          LEFT JOIN
+               member m ON mp.author_num = m.num
+    </select>
+    <resultMap id="selectDetailPostResultMap" type="fashionmanager.dto.SelectDetailMentoringPostDTO">
+        <id property="num" column="post_num"/>
+        <result property="title" column="post_title"/>
+        <result property="content" column="post_content"/>
+        <result property="finish" column="post_finish"/>
+        <result property="authorNum" column="author_num"/>
+        <result property="authorName" column="author_name"/>
+
+
+        <collection property="photos" ofType="fashionmanager.dto.PhotoDTO">
+            <id property="num" column="photo_num"/>
+            <result property="name" column="photo_name"/>
+            <result property="path" column="photo_path"/>
+            <result property="photoCategoryNum" column="photo_category_num"/>
+        </collection>
+
+    </resultMap>
+    <select id="findById" resultMap="selectDetailPostResultMap">
+        SELECT
+               mp.num AS post_num
+             , mp.title AS post_title
+             , mp.content AS post_content
+             , mp.finish AS post_finish
+             , mp.author_num
+             , m.name AS author_name
+             , p.num AS photo_num
+             , p.name AS photo_name
+             , p.path AS photo_path
+             , p.photo_category_num
+          FROM mentoring_post mp
+          LEFT JOIN member m ON mp.author_num = m.num
+          LEFT JOIN photo p ON mp.num = p.post_num AND p.photo_category_num = 3
+         WHERE mp.num = #{num}
+    </select>
+</mapper>

@@ -1,0 +1,57 @@
+package fashionmanager.develop.controller;
+
+import fashionmanager.develop.dto.BadgeAssignRequest;
+import fashionmanager.develop.dto.UserDTO;
+import fashionmanager.develop.service.BadgeService;
+import fashionmanager.develop.service.UserService;
+import fashionmanager.develop.repository.BadgeRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Controller
+@RequestMapping("/member")
+public class BadgeController {
+
+    private final BadgeService badgeService;
+    private final UserService userService; // 유저 조회용
+    private final BadgeRepository badgeRepository;
+
+    public BadgeController(BadgeService badgeService,
+                           UserService userService,
+                           BadgeRepository badgeRepository) {
+        this.badgeService = badgeService;
+        this.userService = userService;
+        this.badgeRepository = badgeRepository;
+    }
+
+
+    // 회원에게 칭호 등록
+
+    @PostMapping("/badges/assign")
+    public ResponseEntity<UserDTO> assignBadge(@RequestBody BadgeAssignRequest request) {
+        UserDTO updatedUser = badgeService.assignBadge(request.getUserNum(), request.getBadgeNum());
+        return ResponseEntity.ok(updatedUser);
+    }
+
+
+
+    // 회원에게서 칭호 삭제
+
+    @DeleteMapping("/badges/remove")
+    public ResponseEntity<Map<String, String>>  removeBadge(@RequestBody BadgeAssignRequest request) {
+        badgeService.removeBadge(request.getUserNum(), request.getBadgeNum());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "뱃지가 삭제되었습니다.");
+
+
+        return ResponseEntity.ok(response);
+    }
+}
