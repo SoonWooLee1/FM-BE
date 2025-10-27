@@ -93,6 +93,36 @@
         JOIN MEMBER_STATUS C ON (C.NUM = B.MEMBER_STATE_NUM)
     </select>
 
+    <select id="selectMemberRightBadge" resultType="fashionmanager.develop.dto.MemberRightBadgeDTO">
+        SELECT
+            A.NUM AS memberNum,
+            A.ID AS memberId,
+            A.PWD AS memberPwd,
+            A.EMAIL AS memberEmail,
+            A.NAME AS memberName,
+            A.AGE AS memberAge,
+            A.GENDER AS memberGender,
+            A.HEIGHT AS memberHeight,
+            A.WEIGHT AS memberWeight,
+            A.STATUS AS memberStatus,
+            A.REPORT_COUNT AS memberReportCount,
+            A.DAILY_REPORT_COUNT AS memberDailyReportCount,
+            A.GOOD_COUNT AS memberGoodCount,
+            A.MONTHLY_GOOD_COUNT AS memberMonthlyGoodCount,
+            A.CHEER_COUNT AS memberCheerCount,
+            A.MESSAGE_ALLOW AS memberMessageAllow,
+            B.MEMBER_STATE_NUM AS memberStateNum,
+            C.NAME AS memberStateName,
+            D.BADGE_NUM AS memberBadgeNum,
+            E.NAME AS memberBadgeName
+        FROM MEMBER A
+                 JOIN ASSIGNED_RIGHT B ON (A.NUM = B.MEMBER_NUM)
+                 JOIN MEMBER_STATUS C ON (C.NUM = B.MEMBER_STATE_NUM)
+                 JOIN ASSIGNED_BADGE D ON (D.MEMBER_NUM = A.NUM)
+                 JOIN BADGE E ON (E.NUM = D.BADGE_NUM);
+    </select>
+
+
     <select id="selectMemberById" parameterType="string" resultType="fashionmanager.develop.dto.MemberDTO">
         SELECT
             A.NUM AS memberNum

@@ -32,5 +32,5 @@ public class FashionPostEntity {
     private double temp;
 
     @Column(name = "member_num")
-    private int member_num;
+    private int memberNum;
 }

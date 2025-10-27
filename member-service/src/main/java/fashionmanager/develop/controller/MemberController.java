@@ -120,8 +120,8 @@ public class MemberController {
     }
 
     @PostMapping("/updateright")
-    public ResponseEntity<String> updateRight(@RequestBody UpdateRightDTO updateRightDTO){
-        int result = ms.updateRight(updateRightDTO);
+    public ResponseEntity<String> updateRight(int num, int updateRight){
+        int result = ms.updateRight(num,updateRight);
         if(result == 1){
             log.info("회원의 권한이 변경되었습니다.");
             return ResponseEntity.ok("회원의 권한이 변경되었습니다.");
@@ -131,11 +131,15 @@ public class MemberController {
         }
     }
 
-//    @PostMapping("/updatestate")
-//    public ResponseEntity<String> updateState(String id, String updateState){
-//        int result = ms.updateState(id, updateState);
-//        if(result)
-//    }
+    @PostMapping("/updatestate")
+    public ResponseEntity<String> updateState(String id, String updateState){
+        int result = ms.updateState(id, updateState);
+        if(result == 1){
+            return ResponseEntity.ok("상태가 업데이트 되었다.");
+        }else{
+            return ResponseEntity.ok("상태 업데이트에 실패했습니다.");
+        }
+    }
 
     @PostMapping("/updatepassword")
     public ResponseEntity<Integer> updatePassword(String id, String changePassword, String checkPassword){

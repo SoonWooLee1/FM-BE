@@ -2,31 +2,37 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="fashionmanager.mapper.InfluencerPageMapper">
 
+    <!-- ✅ 결과 매핑 정의 -->
     <resultMap id="influencerPageMap" type="fashionmanager.dto.InfluencerPageResponseDTO">
-        <id property="num" column="NUM"/>
-        <result property="title" column="TITLE"/>
-        <result property="content" column="CONTENT"/>
-        <result property="insta" column="INSTA"/>
-        <result property="phone" column="PHONE"/>
-        <result property="memberNum" column="MEMBER_NUM"/>
-
-        <!--조인을 하기 위한 memberName 추가-->
-        <result property="memberName" column="MEMBER_NAME"/>
+        <id     property="num"         column="NUM"/>
+        <result property="title"       column="TITLE"/>
+        <result property="content"     column="CONTENT"/>
+        <result property="memberNum"   column="MEMBER_NUM"/>
+        <result property="memberName"  column="MEMBER_NAME"/>
+        <result property="insta"       column="INSTA"/>
+        <result property="phone"       column="PHONE"/>
+        <result property="likes"       column="LIKES"/>
+        <result property="cheers"      column="CHEERS"/>
     </resultMap>
 
+    <!-- ✅ 인플루언서 페이지 조건 조회 -->
     <select id="selectResultPage" parameterType="map" resultMap="influencerPageMap">
         SELECT
-        A.NUM
-        , A.TITLE
-        , A.CONTENT
-        , A.MEMBER_NUM
-        , B.NAME AS MEMBER_NAME
-        , A.INSTA
-        , A.PHONE
+        A.NUM,
+        A.TITLE,
+        A.CONTENT,
+        A.MEMBER_NUM,
+        B.NAME AS MEMBER_NAME,
+        A.INSTA,
+        A.PHONE,
+        B.good_count  AS LIKES,
+        B.cheer_count AS CHEERS
         FROM INFLUENCER_PAGE A
-        JOIN MEMBER B ON B.NUM = A.MEMBER_NUM
+        JOIN MEMBER B
+        ON B.NUM = A.MEMBER_NUM
         <trim prefix="WHERE" prefixOverrides="AND | OR">
             <if test="title != null and title != ''">
                 A.TITLE LIKE CONCAT('%', #{title}, '%')
@@ -44,16 +50,18 @@
         ORDER BY A.NUM DESC
     </select>
 
-    <!-- 추가: 검색 + 페이징 -->
+    <!-- ✅ 인플루언서 페이지 조건 + 페이징 -->
     <select id="selectResultPageWithPaging" parameterType="map" resultMap="influencerPageMap">
         SELECT
-        A.NUM
-        , A.TITLE
-        , A.CONTENT
-        , A.MEMBER_NUM
-        , B.NAME AS MEMBER_NAME
-        , A.INSTA
-        , A.PHONE
+        A.NUM,
+        A.TITLE,
+        A.CONTENT,
+        A.MEMBER_NUM,
+        B.NAME AS MEMBER_NAME,
+        A.INSTA,
+        A.PHONE,
+        B.good_count  AS LIKES,
+        B.cheer_count AS CHEERS
         FROM INFLUENCER_PAGE A
         JOIN MEMBER B ON B.NUM = A.MEMBER_NUM
         <trim prefix="WHERE" prefixOverrides="AND | OR">
@@ -72,5 +80,16 @@
         </trim>
         ORDER BY A.NUM DESC
         LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectInfluencerBadges" parameterType="Integer" resultType="string">
+
+        SELECT
+            b.name
+        FROM Assigned_Badge a
+                 JOIN Badge b
+                      ON b.num = a.badge_num
+        WHERE a.member_num = #{memberNum}
+
     </select>
 </mapper>

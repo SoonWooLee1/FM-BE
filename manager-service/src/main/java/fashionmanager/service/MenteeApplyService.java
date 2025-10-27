@@ -33,8 +33,9 @@ public class MenteeApplyService {
 //    private String UploadPath = "C:\\uploadFiles\\Mentee_Apply";
 
     // 같은 프로젝트 패키지에 생성하게끔 만들어주는 경로
-    private final String UploadPath =
-            new File(System.getProperty("user.dir"), "uploadFiles/Mentee_Apply").getAbsolutePath();
+    private final String UploadPath = new File(
+            new File(System.getProperty("user.dir"), "../../Fashion-Manager-FE/public/images"),"mentee_apply").getAbsolutePath();
+
 
     // PhotoType에서 페이지 코드 가져옴
     private static final int MENTEE_APPLY_CODE = PhotoType.MENTEE_APPLY.getCode();
@@ -57,7 +58,7 @@ public class MenteeApplyService {
                     .findAllByPostNumAndPhotoCategoryNum(pageNum, MENTEE_APPLY_CODE)
                     .stream()
                     // 정적 리소스 매핑과 맞춘 상대경로로 응답 (브라우저에서 바로 접근 가능)
-                    .map(p -> "/files/mentee_apply/" + p.getName())
+                    .map(p -> "/images/mentee_apply/" + p.getName())
                     .toList();
             dto.setPhotoPaths(urls);
         }
@@ -114,7 +115,7 @@ public class MenteeApplyService {
                 photoEntity.setPostNum(entitySaved.getNum());
                 photoRepository.save(photoEntity);
 
-                urls.add("/files/mentee_apply/" + savedFileName);     // 추가
+                urls.add("/images/mentee_apply/" + savedFileName);     // 추가
             }
         }
         // db에서 이름 가져오기

@@ -11,7 +11,7 @@ public class FashionModifyResponseDTO {
     private int num;
     private String title;
     private String content;
-    private int member_num;
+    private int memberNum;
     private List<Integer> hashtag;
     private List<Integer> items;
 }

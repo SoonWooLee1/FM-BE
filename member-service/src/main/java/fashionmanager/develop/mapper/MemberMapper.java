@@ -1,6 +1,7 @@
 package fashionmanager.develop.mapper;
 
 import fashionmanager.develop.dto.MemberDTO;
+import fashionmanager.develop.dto.MemberRightBadgeDTO;
 import fashionmanager.develop.dto.MemberRightDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,4 +25,6 @@ public interface MemberMapper {
     MemberDTO selectMemberByEmailAndId(@Param("selectMemberEmail")String mail, @Param("selectMemberId")String id);
 
     List<MemberRightDTO> selectMemberRight();
+
+    List<MemberRightBadgeDTO> selectMemberRightBadge();
 }

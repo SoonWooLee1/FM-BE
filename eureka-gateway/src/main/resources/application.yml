@@ -28,7 +28,7 @@ spring:
            - Path=/manager-service/**
          filters:
            - RewritePath=/manager-service/(?<segment>.*), /$\{segment}
-           - JwtAuthenticationFilter
+#           - JwtAuthenticationFilter
 
 token:
   expiration_time: 86400000

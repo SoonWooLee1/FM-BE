@@ -105,13 +105,13 @@ public class MemberService {
     }
 
     @Transactional
-    public int updateRight(UpdateRightDTO updateRightDTO) {
-        boolean check1 = updateRightDTO.getMemberStateNum() == 0;
-        boolean check2 = updateRightDTO.getMemberNum() == 0;
+    public int updateRight(int num, int updateRight) {
+        boolean check1 = num == 0;
+        boolean check2 = updateRight == 0;
         if (check1 || check2) {
             return 0;
         }
-        int result = assignedRightRepository.updateRight(updateRightDTO.getMemberNum(),updateRightDTO.getMemberStateNum());
+        int result = assignedRightRepository.updateRight(num,updateRight);
         if (result == 1) {
             return 1;
         }else{
@@ -199,6 +199,16 @@ public class MemberService {
     public List<MemberRightDTO> selectMemberRight() {
         return memberMapper.selectMemberRight();
     }
+
+    public List<MemberRightBadgeDTO> selectMemberRightBadge() {
+        return memberMapper.selectMemberRightBadge();
+    }
+
+    @Transactional
+    public int updateState(String id, String updateState) {
+        return memberRepository.updateState(id, updateState);
+    }
+
 }
 
 

@@ -33,8 +33,8 @@ public class InfluencerApplyService {
 //    private String UploadPath = "C:\\uploadFiles\\Influencer_Apply";
 
     // 같은 프로젝트 패키지에 생성하게끔 만들어주는 경로
-    private final String UploadPath =
-            new File(System.getProperty("user.dir"), "uploadFiles/Influencer_Apply").getAbsolutePath();
+    private final String UploadPath = new File(
+            new File(System.getProperty("user.dir"), "../../Fashion-Manager-FE/public/images"),"influencer_apply").getAbsolutePath();
 
     // PhotoType에서 페이지 코드 가져옴
     private static final int INFLUENCER_APPLY_CODE = PhotoType.INFLUENCER_APPLY.getCode();
@@ -59,7 +59,7 @@ public class InfluencerApplyService {
                     .findAllByPostNumAndPhotoCategoryNum(pageNum, INFLUENCER_APPLY_CODE)
                     .stream()
                     // 정적 리소스 매핑과 맞춘 상대경로로 응답 (브라우저에서 바로 접근 가능)
-                    .map(p -> "/files/influencer_apply/" + p.getName())
+                    .map(p -> "/images/influencer_apply/" + p.getName())
                     .toList();
             dto.setPhotoPaths(urls);
         }
@@ -119,7 +119,7 @@ public class InfluencerApplyService {
                 photoEntity.setPostNum(entitySaved.getNum());
                 photoRepository.save(photoEntity);
 
-                urls.add("/files/influencer_apply/" + savedFileName);     // 추가
+                urls.add("/images/influencer_apply/" + savedFileName);     // 추가
             }
         }
 

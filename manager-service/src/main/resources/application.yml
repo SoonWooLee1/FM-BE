@@ -19,9 +19,7 @@ spring:
   web:
     resources:
       #     수정 부분
-      static-locations: file:///${user.dir}/uploadFiles/
-      cache:
-        period: 3600   # Spring Boot 2.6+ 권장 표기 (기존 cache-period 대체)
+      static-locations: file:///C:/3rd project/public/images/
 
   jpa:
     generate-ddl: false
@@ -53,10 +51,11 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
-# 사용자 정의 프로퍼티 (필요시 @Value("${filepath}") 로 주입)
-filepath: C:/uploadFiles/
+
 
 # 수정부분
 file:
-  upload-root: ${user.dir}/uploadFiles
+  upload-root: "C:/3rdProjectFE/public/images"
+
+
 
