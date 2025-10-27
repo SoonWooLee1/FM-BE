@@ -19,7 +19,8 @@
 
     <select id="selectSenderMessage" parameterType="string" resultType="fashionmanager.dto.SelectMassageDTO">
         SELECT
-               A.TITLE AS title
+               A.NUM AS num
+             , A.TITLE AS title
              , A.CONTENT AS content
              , A.DATE AS date
              , A.EXP_DATE AS expDate
@@ -36,7 +37,8 @@
 
     <select id="selectReceiverMessage" parameterType="string" resultType="fashionmanager.dto.SelectMassageDTO">
         SELECT
-            A.TITLE AS title
+            A.NUM AS num
+             , A.TITLE AS title
              , A.CONTENT AS content
              , A.DATE AS date
              , A.EXP_DATE AS expDate

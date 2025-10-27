@@ -36,6 +36,7 @@ public class JwtTokenProvider {
     public String createToken(MemberRightDTO memberRight){
         //MemberRightDTO memberRight = memberService.selectMemberRightById(memberId);
         Claims claims = Jwts.claims().setSubject(memberRight.getMemberId());
+        claims.put("num", memberRight.getMemberNum());
         claims.put("role",memberRight.getMemberStateName());
         claims.put("name",memberRight.getMemberName());
         claims.put("email",memberRight.getMemberEmail());
@@ -74,6 +75,22 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token).getBody().get("role",String.class);
         return memberState;
+    }
+
+    public String getMemberEmailFromToken(String token){
+        String memberEmail = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token).getBody().get("email",String.class);
+        return memberEmail;
+    }
+
+    public int getMemberNumFromToken(String token){
+        int memberNum = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token).getBody().get("num",Integer.class);
+        return memberNum;
     }
 
     public String resolveToken(HttpServletRequest request){

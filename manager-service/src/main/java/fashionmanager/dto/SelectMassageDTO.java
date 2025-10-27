@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SelectMassageDTO {
+    private int num;
     private String title;
     private String content;
     private LocalDateTime date;

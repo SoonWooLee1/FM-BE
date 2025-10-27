@@ -73,7 +73,7 @@ public class FashionPostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/react/{postNum}")
+    @PostMapping("/react/{postNum}")
     public ResponseEntity<ReactionResponseDTO> insertReaction(@PathVariable int postNum,
                         @RequestBody ReactionRequestDTO reactionRequestDTO){
         ReactionResponseDTO responseReaction = fashionPostService.insertReact(postNum, reactionRequestDTO);

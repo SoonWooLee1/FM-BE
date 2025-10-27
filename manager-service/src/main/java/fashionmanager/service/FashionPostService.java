@@ -375,68 +375,74 @@ public class FashionPostService {
             throw new IllegalArgumentException("좋아요/힘내요 요청이 아닙니다!");
         }
         String reactionType = reaction.getReactionType().toLowerCase();
-        ReactionResponseDTO response = new ReactionResponseDTO();
-
 
         FashionPostEntity post = fashionPostRepository.findById(postNum)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
 
-        PostReactionEntity reactionEntity = new PostReactionEntity();
-        reactionEntity.setMemberNum(reaction.getMemberNum());
-        reactionEntity.setReactionType(reaction.getReactionType());
-        reactionEntity.setPostNum(postNum);
-        reactionEntity.setPostCategoryNum(1);  // 패션 게시물은 1
+        Optional<PostReactionEntity> oldReactionOpt = postReactionRepository.findByMemberNumAndPostNumAndPostCategoryNum(
+                reaction.getMemberNum(), 1, postNum); // 카테고리 1(패션)으로 고정
 
-        Optional<PostReactionEntity> oldReaction = postReactionRepository.findByMemberNumAndPostNumAndPostCategoryNum
-                (reaction.getMemberNum(), 1, postNum);
+        if (oldReactionOpt.isPresent()) {
+            // --- 1. 기존 반응이 있는 경우 (변경 또는 취소) ---
+            PostReactionEntity existingReaction = oldReactionOpt.get();
+            String existingType = existingReaction.getReactionType().toLowerCase();
 
-        if (oldReaction.isPresent()) {
-            PostReactionEntity existingReaction = oldReaction.get();
-            if (existingReaction.getReactionType().equalsIgnoreCase(reactionEntity.getReactionType())) {
+            if (existingType.equals(reactionType)) {
+                // 1-1. 같은 반응을 눌렀을 때 (취소)
                 postReactionRepository.delete(existingReaction);
-
-                switch (reactionType) {
-                    case "good":
-                        post.setGood(post.getGood() - 1);
-                        break;
-                    case "cheer":
-                        post.setCheer(post.getCheer() - 1);
-                        break;
+                if (reactionType.equals("good")) {
+                    post.setGood(post.getGood() - 1);
+                } else {
+                    post.setCheer(post.getCheer() - 1);
                 }
             } else {
-                PostReactionEntity newReaction = postReactionRepository.save(reactionEntity);
-                switch (reactionType) {
-                    case "good":
-                        post.setGood(post.getGood() + 1);
-                        break;
-                    case "cheer":
-                        post.setCheer(post.getCheer() + 1);
-                        break;
+                // 1-2. 다른 반응을 눌렀을 때 (변경)
+                // 기존 반응 카운트 감소
+                if (existingType.equals("good")) {
+                    post.setGood(post.getGood() - 1);
+                } else {
+                    post.setCheer(post.getCheer() - 1);
                 }
+                // 새 반응 카운트 증가
+                if (reactionType.equals("good")) {
+                    post.setGood(post.getGood() + 1);
+                } else {
+                    post.setCheer(post.getCheer() + 1);
+                }
+                // DB의 반응 타입 업데이트
+                existingReaction.setReactionType(reaction.getReactionType());
+                postReactionRepository.save(existingReaction);
             }
-            PostReactionEntity newReaction = postReactionRepository.save(reactionEntity);
-
-            FashionPostEntity updateReactionPost = fashionPostRepository.save(post);
-            response.setPostNum(postNum);
-            response.setReactionType(reactionType);
-            response.setMemberNum(reaction.getMemberNum());
-            response.setPostCategoryNum(1);
         } else {
+            // --- 2. 기존 반응이 없는 경우 (신규) ---
+            // (지적하신 중복 코드가 있던 위치)
+            // 여기서만 새 엔티티를 생성합니다.
             PostReactionEntity newReaction = new PostReactionEntity();
             newReaction.setMemberNum(reaction.getMemberNum());
             newReaction.setReactionType(reaction.getReactionType());
             newReaction.setPostNum(postNum);
-            newReaction.setPostCategoryNum(1);  // 패션 게시물은 1
+            newReaction.setPostCategoryNum(1); // 패션 게시물은 1
 
-            if (reactionType.equals("good")) post.setGood(post.getGood() + 1);
-            else post.setCheer(post.getCheer() + 1);
+            postReactionRepository.save(newReaction);
 
-            response.setPostNum(postNum);
-            response.setReactionType(reactionType);
-            response.setMemberNum(reaction.getMemberNum());
-            response.setPostCategoryNum(1);
-
+            // 새 반응 카운트 증가
+            if (reactionType.equals("good")) {
+                post.setGood(post.getGood() + 1);
+            } else {
+                post.setCheer(post.getCheer() + 1);
+            }
         }
+
+        // 게시글의 최종 카운트를 DB에 저장 (트랜잭션 종료 시 자동 반영되지만 명시적 save)
+        fashionPostRepository.save(post);
+
+        // --- 3. 응답 반환 ---
+        ReactionResponseDTO response = new ReactionResponseDTO();
+        response.setPostNum(postNum);
+        response.setReactionType(reactionType);
+        response.setMemberNum(reaction.getMemberNum());
+        response.setPostCategoryNum(1);
+
         return response;
     }
 }

@@ -76,4 +76,14 @@ public class MessageService {
              return 0;
          }
     }
+
+    @Transactional
+    public int updatemessageconfirm(int messageNum) {
+        int result = messageRepository.updatemessageconfirm(messageNum);
+        if(result == 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
 }

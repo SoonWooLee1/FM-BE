@@ -17,6 +17,6 @@ public class InsertMemberDTO {
     private char memberGender;
     private int memberHeight;
     private int memberWeight;
-    private String memberStatus = "활동중";
+    private String memberStatus = "ACTIVE";
     private boolean memberMessageAllow = true;
 }

@@ -67,7 +67,33 @@ public class MemberService {
         return 1;
     }
 
+    public int insertMember(InsertMemberDTO insertMemberDTO) {
+        boolean check1 = insertMemberDTO.getMemberId() == null || "".equals(insertMemberDTO.getMemberId());
+        boolean check2 = insertMemberDTO.getMemberPwd() == null || "".equals(insertMemberDTO.getMemberPwd());
+        boolean check3 = insertMemberDTO.getMemberName() == null || "".equals(insertMemberDTO.getMemberName());
+        boolean check4 = insertMemberDTO.getMemberEmail() == null || "".equals(insertMemberDTO.getMemberEmail());
+        boolean check5 = insertMemberDTO.getMemberAge() == 0;
+        boolean check6 = insertMemberDTO.getMemberGender() != '남' && insertMemberDTO.getMemberGender() != '여';
+        if (check1 || check2 || check3 || check4 || check5 || check6) {
+            return 0;
+        }
+        insertMemberDTO.setMemberPwd(bCryptPasswordEncoder.encode(insertMemberDTO.getMemberPwd()));
+        memberRepository.save(modelMapper.map(insertMemberDTO, Member.class));
+        return 1;
+    }
+
     public int insertAdminRight(AssignedRightDTO assignedRightDTO) {
+        boolean check1 = assignedRightDTO.getAssignedRightMemberStateNum() == 0;
+        boolean check2 = assignedRightDTO.getAssignedRightMemberStateNum() == 0;
+        if (check1 || check2) {
+            return 0;
+        }
+
+        assignedRightRepository.save(modelMapper.map(assignedRightDTO, AssignedRight.class));
+        return 1;
+    }
+
+    public int insertMemberRight(AssignedRightDTO assignedRightDTO) {
         boolean check1 = assignedRightDTO.getAssignedRightMemberStateNum() == 0;
         boolean check2 = assignedRightDTO.getAssignedRightMemberStateNum() == 0;
         if (check1 || check2) {
@@ -149,6 +175,29 @@ public class MemberService {
         }else{
             return 0;
         }
+    }
+
+    public String adminLogin(String adminId, String adminPwd) {
+        MemberRightDTO member = memberMapper.selectMemberRightById(adminId);
+        if(member.getMemberStateNum() != 1 || member == null){
+            log.info("존재하지 않는 관리자 회원");
+            return "존재하지 않는 관리자 회원";
+        }else{
+            boolean check = bCryptPasswordEncoder.matches(adminPwd, member.getMemberPwd());
+            if(!check){
+                log.info("비밀번호 불일치");
+                return "비밀번호 불일치";
+            }else{
+                log.info("비밀번호 일치");
+                String token = jwtTokenProvider.createToken(member);
+                return token;
+            }
+        }
+    }
+
+
+    public List<MemberRightDTO> selectMemberRight() {
+        return memberMapper.selectMemberRight();
     }
 }
 

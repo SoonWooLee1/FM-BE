@@ -1,13 +1,17 @@
 package fashionmanager.controller;
 
 import fashionmanager.dto.InsertMessageDTO;
+import fashionmanager.dto.MemberDTO;
 import fashionmanager.dto.MessageDTO;
 import fashionmanager.dto.SelectMassageDTO;
+import fashionmanager.service.MemberService;
 import fashionmanager.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -16,9 +20,11 @@ import java.util.List;
 public class MessageController {
 
     private final MessageService ms;
+    private final MemberService memberService;
 
-    public MessageController(MessageService messageService) {
+    public MessageController(MessageService messageService, MemberService memberService) {
         this.ms = messageService;
+        this.memberService = memberService;
     }
 
     @GetMapping("/selectallmessages")
@@ -31,7 +37,7 @@ public class MessageController {
         return ResponseEntity.ok(messageList);
     }
 
-    @GetMapping("/selectsendermessage")
+    @PostMapping("/selectsendermessage")
     public ResponseEntity<List<SelectMassageDTO>> selectSenderMessage(String senderId) {
         List<SelectMassageDTO> messageList = ms.selectSenderMessage(senderId);
         for (SelectMassageDTO messageDTO : messageList) {
@@ -41,7 +47,7 @@ public class MessageController {
         return ResponseEntity.ok(messageList);
     }
 
-    @GetMapping("/selectreceivermessage")
+    @PostMapping("/selectreceivermessage")
     public ResponseEntity<List<SelectMassageDTO>> selectReceiverMessage(String receiverId) {
         List<SelectMassageDTO> messageList = ms.selectReceiverMessage(receiverId);
         for (SelectMassageDTO messageDTO : messageList) {
@@ -52,8 +58,26 @@ public class MessageController {
     }
 
     @PostMapping("/insertmessage")
-    public ResponseEntity<String> insertMessage(@RequestBody InsertMessageDTO insertMessageDTO){
+    public ResponseEntity<String> insertMessage(String messageReceiver, String messageSender, String messageTitle, int messageCategory, String messageContent){
+        MemberDTO senderMember = memberService.selectMemberById(messageSender);
+        MemberDTO receiverMember = memberService.selectMemberById(messageReceiver);
+
+        InsertMessageDTO insertMessageDTO = new InsertMessageDTO();
+        insertMessageDTO.setTitle(messageTitle);
+        insertMessageDTO.setContent(messageContent);
+        insertMessageDTO.setDate(LocalDateTime.now());
+        insertMessageDTO.setExpDate(LocalDateTime.now().plusMonths(1));
+        insertMessageDTO.setSenderNum(senderMember.getMemberNum());
+        insertMessageDTO.setReceiverNum(receiverMember.getMemberNum());
+        insertMessageDTO.setSenderName(messageSender);
+        insertMessageDTO.setReceiverName(messageReceiver);
+        insertMessageDTO.setCategoryNum(messageCategory);
+
+        System.out.println("SenderName: " + senderMember.getMemberName());
+        System.out.println("ReceiverName: " + receiverMember.getMemberName());
+
         int result = ms.insertMessage(insertMessageDTO);
+
         if(result == 1){
             log.info("메시지가 보내졌습니다.");
             return ResponseEntity.ok("메시지가 보내졌습니다.");
@@ -75,4 +99,13 @@ public class MessageController {
         }
     }
 
+    @PostMapping("/updatemessageconfirm")
+    public ResponseEntity<String> updateMessageConfirm(int messageNum){
+        int result = ms.updatemessageconfirm(messageNum);
+        if(result == 1){
+            return ResponseEntity.ok("쪽지를 확인했습니다.");
+        }else{
+            return ResponseEntity.ok("쪽지를 확인하지 않았습니다.");
+        }
+    }
 }

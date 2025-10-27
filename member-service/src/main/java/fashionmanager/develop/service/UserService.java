@@ -1,5 +1,7 @@
 package fashionmanager.develop.service;
 
+import fashionmanager.develop.dto.AssignedRightDTO;
+import fashionmanager.develop.entity.AssignedRight;
 import fashionmanager.develop.mapper.UserMapper;
 import fashionmanager.develop.dto.UserDTO;
 import fashionmanager.develop.entity.User;
@@ -75,41 +77,41 @@ public class UserService {
             throw new ValidationException("성별은 필수 입력 값입니다.");
         }
 
-            // ===== 중복 검사 =====
-            if (userRepository.existsByUserId(newUser.getUserId())) {
-                throw new DuplicateUserException("이미 사용 중인 아이디입니다.");
-            }
-            if (userRepository.existsByUserEmail(newUser.getUserEmail())) {
-                throw new DuplicateUserException("이미 사용 중인 이메일입니다.");
-            }
+        // ===== 중복 검사 =====
+        if (userRepository.existsByUserId(newUser.getUserId())) {
+            throw new DuplicateUserException("이미 사용 중인 아이디입니다.");
+        }
+        if (userRepository.existsByUserEmail(newUser.getUserEmail())) {
+            throw new DuplicateUserException("이미 사용 중인 이메일입니다.");
+        }
 
 
-            // 비밀번호 해싱 (평문 → BCrypt 다이제스트)
-            newUser.setUserPwd(bCryptPasswordEncoder.encode(newUser.getUserPwd()));
+        // 비밀번호 해싱 (평문 → BCrypt 다이제스트)
+        newUser.setUserPwd(bCryptPasswordEncoder.encode(newUser.getUserPwd()));
 
 
-            // DTO -> Entity 변환
-            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-            User user = modelMapper.map(newUser, User.class);
+        // DTO -> Entity 변환
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        User user = modelMapper.map(newUser, User.class);
 
-            // DB 저장
-            User savedUser = userRepository.save(user);
+        // DB 저장
+        User savedUser = userRepository.save(user);
 
-            // Entity -> DTO 변환 후 반환
-            return modelMapper.map(savedUser, UserDTO.class);
+        // Entity -> DTO 변환 후 반환
+        return modelMapper.map(savedUser, UserDTO.class);
 
 
     }
 
-        // 3. 회원 번호를 불러와 특정 회원을 조회하는 기능(JPA)
+    // 3. 회원 번호를 불러와 특정 회원을 조회하는 기능(JPA)
 
-        public UserDTO findUserById ( int userNum){
+    public UserDTO findUserById ( int userNum){
 
-            User user = userRepository.findById(userNum)
-                    .orElseThrow(IllegalArgumentException::new);
-            return userToUserDTO(user);
+        User user = userRepository.findById(userNum)
+                .orElseThrow(IllegalArgumentException::new);
+        return userToUserDTO(user);
 
-        }
+    }
 
 
 
