@@ -43,9 +43,57 @@
              , A.MONTHLY_GOOD_COUNT AS memberMonthlyGoodCount
              , A.CHEER_COUNT AS memberCheerCount
              , A.MESSAGE_ALLOW AS memberMessageAllow
+
+             -- 새로 추가된 컬럼 --
+             , A.PHONE    AS memberPhone
+             , A.ADDRESS  AS memberAddress
         FROM MEMBER A
         WHERE A.NUM = #{selectMemberNum}
     </select>
+
+    <update id="updateMemberByNum" parameterType="fashionmanager.develop.dto.MemberDTO">
+        UPDATE MEMBER
+        <set>
+            <if test="memberId != null and memberId != ''">
+                ID = #{memberId},
+            </if>
+
+            <!-- 🔐 비밀번호: 서비스에서 이미 BCrypt 인코딩된 값이 있을 때만 -->
+            <if test="memberPwd != null and memberPwd != ''">
+                PWD = #{memberPwd},
+            </if>
+
+            <if test="memberEmail != null and memberEmail != ''">
+                EMAIL = #{memberEmail},
+            </if>
+            <if test="memberName != null and memberName != ''">
+                NAME = #{memberName},
+            </if>
+
+            <!-- 숫자는 null 체크만 (0을 유효값으로 쓸 수 있으니) -->
+            <if test="memberAge != null">
+                AGE = #{memberAge},
+            </if>
+            <if test="memberHeight != null">
+                HEIGHT = #{memberHeight},
+            </if>
+            <if test="memberWeight != null">
+                WEIGHT = #{memberWeight},
+            </if>
+
+            <if test="memberGender != null and memberGender != ''">
+                GENDER = #{memberGender},
+            </if>
+
+            <if test="memberPhone != null and memberPhone != ''">
+                PHONE = #{memberPhone},
+            </if>
+            <if test="memberAddress != null and memberAddress != ''">
+                ADDRESS = #{memberAddress},
+            </if>
+        </set>
+        WHERE NUM = #{memberNum}
+    </update>
 
     <select id="selectMember" resultType="fashionmanager.develop.dto.MemberDTO">
         SELECT
@@ -65,6 +113,9 @@
              , A.MONTHLY_GOOD_COUNT AS memberMonthlyGoodCount
              , A.CHEER_COUNT AS memberCheerCount
              , A.MESSAGE_ALLOW AS memberMessageAllow
+             -- 새로 추가된 컬럼 --
+             , A.PHONE    AS memberPhone
+             , A.ADDRESS  AS memberAddress
         FROM MEMBER A
     </select>
 
@@ -86,6 +137,10 @@
           , A.MONTHLY_GOOD_COUNT AS memberMonthlyGoodCount
           , A.CHEER_COUNT AS memberCheerCount
           , A.MESSAGE_ALLOW AS memberMessageAllow
+             -- 새로 추가된 컬럼 --
+          , A.PHONE    AS memberPhone
+          , A.ADDRESS  AS memberAddress
+
           , B.MEMBER_STATE_NUM AS memberStateNum
           , C.NAME AS memberStateName
         FROM MEMBER A

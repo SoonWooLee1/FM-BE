@@ -70,11 +70,26 @@ public class UserService {
             throw new ValidationException("이름은 필수 입력 값입니다.");
         }
 
-        if (newUser.getUserAge() <= 0) {
+        if (newUser.getUserAge() <= 0) {        // 음수 금지
             throw new ValidationException("나이는 1 이상이어야 합니다.");
         }
         if (newUser.getUserGender() == null || newUser.getUserGender().trim().isEmpty()) {
             throw new ValidationException("성별은 필수 입력 값입니다.");
+        }
+
+        if (newUser.getUserPhone() == null || newUser.getUserPhone().trim().isEmpty()) {
+            throw new ValidationException("전화번호는 필수 입력 값입니다.");
+        }
+
+        if (newUser.getUserAddress() == null || newUser.getUserAddress().trim().isEmpty()) {
+            throw new ValidationException("주소는 필수 입력 값입니다.");
+        }
+
+        if (newUser.getUserHeight() < 0) {      // 음수 금지
+            throw new ValidationException("키는 0 이상이어야 합니다.");
+        }
+        if (newUser.getUserWeight() < 0) {      // 음수 금지
+            throw new ValidationException("몸무게는 0 이상이어야 합니다.");
         }
 
         // ===== 중복 검사 =====

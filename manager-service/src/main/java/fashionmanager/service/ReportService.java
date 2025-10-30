@@ -103,4 +103,24 @@ public class ReportService {
             return 0;
         }
     }
+
+    @Transactional
+    public int reportPlus(int memberNum) {
+        int result = reportRepository.reportPlus(memberNum);
+        if(result == 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Transactional
+    public int reportMinus(int memberNum) {
+        int result = reportRepository.reportMinus(memberNum);
+        if(result == 1){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
 }

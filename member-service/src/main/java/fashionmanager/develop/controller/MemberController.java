@@ -27,6 +27,22 @@ public class MemberController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @GetMapping("/membernum/{memberNum}")
+    public ResponseEntity<MemberDTO> selectByNum(@PathVariable int memberNum) {
+        MemberDTO dto = ms.selectMemberByNum(memberNum);
+        return (dto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/membernum/{memberNum}")
+    public ResponseEntity<MemberDTO> updateMember(
+            @PathVariable int memberNum,
+            @RequestBody MemberDTO payload
+    ) {
+        payload.setMemberNum(memberNum);     // 경로 변수를 최종 신뢰
+        MemberDTO updated = ms.updateMember(payload);
+        return ResponseEntity.ok(updated);
+    }
+
 
     @GetMapping("/selectmember")
     public ResponseEntity<List<MemberDTO>> selectMember(){

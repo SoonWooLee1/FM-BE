@@ -50,6 +50,20 @@ public class User {
     private int DailyReportCount;
 
 
+    // 새 필드들
+    @Column(name = "phone")
+    private String userPhone;
+
+    @Column(name = "address")
+    private String userAddress;
+
+    @Column(name = "height")
+    private int userHeight;
+
+    @Column(name = "weight")
+    private int userWeight;
+
+
 
     // 뱃지와 다대다 관계
     @ManyToMany

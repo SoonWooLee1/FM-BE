@@ -32,7 +32,7 @@ public class Member {
     private int memberAge;
 
     @Column(name = "gender")
-    private char memberGender;
+    private String memberGender;
 
     @Column(name = "height")
     private int memberHeight;
@@ -60,4 +60,11 @@ public class Member {
 
     @Column(name = "message_allow")
     private boolean memberMessageAllow;
+
+    @Column(name = "phone")
+    private String memberPhone;
+
+    @Column(name = "address")
+    private String memberAddress;
 }
+

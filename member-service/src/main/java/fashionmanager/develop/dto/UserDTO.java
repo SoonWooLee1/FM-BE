@@ -24,6 +24,13 @@ public class UserDTO {
     private int ReportCount;
     private int DailyReportCount;
 
+    //  새 필드들
+    private String userPhone;
+    private String userAddress;
+    private int userHeight;
+    private int userWeight;
+
+
     private List<BadgeDTO> badges = new ArrayList<>();
 
 

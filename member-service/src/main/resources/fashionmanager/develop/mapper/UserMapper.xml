@@ -15,12 +15,19 @@
     <result property="userAge" column="userAge"/>
     <result property="userGender" column="userGender"/>
 
+    <!-- 새 필드들 -->
+    <result property="userPhone"   column="userPhone"/>
+    <result property="userAddress" column="userAddress"/>
+    <result property="userHeight"  column="userHeight"/>
+    <result property="userWeight"  column="userWeight"/>
+
     <!-- 뱃지 컬렉션 매핑 -->
     <collection property="badges" ofType="fashionmanager.develop.dto.BadgeDTO">
       <id property="badgeNum" column="badgeNum"/>
       <result property="badgeName" column="badgeName"/>
     </collection>
   </resultMap>
+
 
 
     <!-- 1. 특정 회원 조회-->
@@ -33,6 +40,14 @@
         m.NAME AS userName,
         m.age AS userAge,
         m.gender AS userGender,
+        -- 새 컬럼들 (DTO와 같은 alias)
+        m.phone   AS userPhone,
+        m.address AS userAddress,
+        m.height  AS userHeight,
+        m.weight  AS userWeight,
+
+
+
         b.num AS badgeNum,
         b.name AS badgeName
         FROM member m
@@ -53,6 +68,13 @@
       m.NAME AS userName,
       m.age AS userAge,
       m.gender AS userGender,
+      --  새 컬럼들
+      m.phone   AS userPhone,
+      m.address AS userAddress,
+      m.height  AS userHeight,
+      m.weight  AS userWeight,
+
+
       b.num AS badgeNum,
       b.name AS badgeName
      FROM member m

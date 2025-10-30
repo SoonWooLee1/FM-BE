@@ -64,4 +64,28 @@ public class ReportController {
         }
     }
 
+    @PostMapping("/reportplus")
+    public ResponseEntity<String> reportPlus(int memberNum) {
+        int result = rs.reportPlus(memberNum);
+        if(result == 1){
+            log.info("신고 횟수를 추가 했습니다.");
+            return ResponseEntity.ok("신고 횟수를 추가 했습니다.");
+        }else{
+            log.info("신고 횟수 추가를 실패했습니다.");
+            return ResponseEntity.ok("신고 횟수 추가를 실패했습니다.");
+        }
+    }
+
+    @PostMapping("/reportminus")
+    public ResponseEntity<String> reportMinus(int memberNum) {
+        int result = rs.reportMinus(memberNum);
+        if(result == 1){
+            log.info("신고 횟수를 삭감 했습니다.");
+            return ResponseEntity.ok("신고 횟수를 추가 했습니다.");
+        }else{
+            log.info("신고 횟수 추가를 실패했습니다.");
+            return ResponseEntity.ok("신고 횟수 추가를 실패했습니다.");
+        }
+    }
+
 }

@@ -48,6 +48,46 @@ public class MemberService {
         return memberMapper.selectMemberByNum(memberNum);
     }
 
+    @Transactional
+    public MemberDTO updateMember(MemberDTO dto) {
+        // int는 null이 불가능하므로 0이면 "값이 세팅되지 않음"으로 판단
+        if (dto.getMemberNum() == 0) {
+            throw new IllegalArgumentException("memberNum is required");
+        }
+
+        // ✅ 비밀번호 해시 추가 (있을 때만)
+        if (dto.getMemberPwd() != null && !dto.getMemberPwd().isBlank()) {
+            // 이미 bcrypt 형태($2a$로 시작)면 재인코딩 방지
+            if (!dto.getMemberPwd().startsWith("$2a$") &&
+                    !dto.getMemberPwd().startsWith("$2b$") &&
+                    !dto.getMemberPwd().startsWith("$2y$")) {
+
+                dto.setMemberPwd(bCryptPasswordEncoder.encode(dto.getMemberPwd()));
+            }
+        } else {
+            // 비번 안 바꿀 경우 null로 처리 → Mapper의 <if>에서 제외
+            dto.setMemberPwd(null);
+        }
+
+        // 최소 한 개라도 수정 값이 있는지 체크(문자열만 예시)
+        boolean hasAny =
+                (dto.getMemberId() != null) ||
+                        (dto.getMemberPwd() != null) ||
+                        (dto.getMemberEmail() != null) ||
+                        (dto.getMemberName() != null);
+
+        if (!hasAny) {
+            throw new IllegalArgumentException("No updatable fields provided");
+        }
+
+        int updated = memberMapper.updateMemberByNum(dto);
+        if (updated == 0) {
+            throw new IllegalStateException("No member updated");
+        }
+
+        return memberMapper.selectMemberByNum(dto.getMemberNum());
+    }
+
     public List<MemberDTO> selectMember() {
         return memberMapper.selectMember();
     }
@@ -58,7 +98,7 @@ public class MemberService {
         boolean check3 = insertMemberDTO.getMemberName() == null || "".equals(insertMemberDTO.getMemberName());
         boolean check4 = insertMemberDTO.getMemberEmail() == null || "".equals(insertMemberDTO.getMemberEmail());
         boolean check5 = insertMemberDTO.getMemberAge() == 0;
-        boolean check6 = insertMemberDTO.getMemberGender() != '남' && insertMemberDTO.getMemberGender() != '여';
+        boolean check6 = !insertMemberDTO.getMemberGender().equals("남성") && !insertMemberDTO.getMemberGender().equals("여성");
         if (check1 || check2 || check3 || check4 || check5 || check6) {
             return 0;
         }
@@ -73,7 +113,7 @@ public class MemberService {
         boolean check3 = insertMemberDTO.getMemberName() == null || "".equals(insertMemberDTO.getMemberName());
         boolean check4 = insertMemberDTO.getMemberEmail() == null || "".equals(insertMemberDTO.getMemberEmail());
         boolean check5 = insertMemberDTO.getMemberAge() == 0;
-        boolean check6 = insertMemberDTO.getMemberGender() != '남' && insertMemberDTO.getMemberGender() != '여';
+        boolean check6 = !insertMemberDTO.getMemberGender().equals("남성") && !insertMemberDTO.getMemberGender().equals("여성");
         if (check1 || check2 || check3 || check4 || check5 || check6) {
             return 0;
         }

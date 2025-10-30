@@ -14,6 +14,8 @@ public interface MemberMapper {
 
     MemberDTO selectMemberByNum(@Param("selectMemberNum")int memberNum);
 
+    int updateMemberByNum(MemberDTO dto);
+
     List<MemberDTO> selectMember();
 
     MemberDTO selectMemberById(@Param("selectMemberId")String memberId);

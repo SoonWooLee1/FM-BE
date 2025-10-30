@@ -15,7 +15,7 @@ public class MemberDTO {
     private String memberEmail;
     private String memberName;
     private int memberAge;
-    private char memberGender;
+    private String memberGender;
     private int memberHeight;
     private int memberWeight;
     private String memberStatus;
@@ -25,5 +25,11 @@ public class MemberDTO {
     private int memberMonthlyGoodCount;
     private int memberCheerCount;
     private boolean memberMessageAllow;
+
+    // 새로 추가된 DB 컬럼(전화번호, 주소)
+    private String memberPhone;
+    private String memberAddress;
+
+
 
 }

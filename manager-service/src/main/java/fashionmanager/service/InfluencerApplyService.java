@@ -152,6 +152,7 @@ public class InfluencerApplyService {
                 .map(entity -> {
                     entity.setTitle(req.getTitle());
                     entity.setContent(req.getContent());
+                    entity.setAccept(req.getAccept());
                     influencerApplyRepository.save(entity);
                     return 1;
                 })
